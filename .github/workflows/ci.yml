@@ -1,0 +1,36 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Verificar sintaxe do servidor
+        run: node --check server.js
+
+      - name: Rodar testes
+        run: npm test
+
+      - name: Construir imagem Docker
+        run: docker build -t sre-backend-arena:latest .
+
+      - name: Validar arquivos do Kubernetes
+        run: |
+          pip install pyyaml --quiet
+          python3 -c "import yaml; yaml.safe_load(open('deployment.yaml')); yaml.safe_load(open('service.yaml')); print('YAML valido!')"
