@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-backend-arena
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-backend-arena
+  template:
+    metadata:
+      labels:
+        app: sre-backend-arena
+    spec:
+      containers:
+        - name: sre-backend-arena
+          image: sre-backend-arena:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
